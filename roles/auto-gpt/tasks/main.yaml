@@ -1,0 +1,11 @@
+---
+- name: Git checkout
+  ansible.builtin.git:
+    repo: 'https://www.github.com/Significant-Gravitas/Auto-GPT.git'
+    dest: /home/ansible/AutoBots/Auto-GPTtest
+    single_branch: yes
+    version: master
+- name: Download Plugins zip folder
+  ansible.builtin.get_url:
+    url: https://github.com/Significant-Gravitas/Auto-GPT-Plugins/archive/refs/heads/master.zip
+    dest: /home/ansible/AutoBots/Auto-GPTtest/plugins

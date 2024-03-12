@@ -1,0 +1,21 @@
+---
+- name: Install default apps on Ubuntu and Debian Workstations.
+  apt:
+    name:
+      - sudo
+      - vim
+      - neofetch
+      - nmap
+    state: present
+    when: ansible_distribution == 'Ubuntu' or ansible_distibution == 'Debian'
+
+- name: Install default apps on Arch Workstations
+  community.general.pacman:
+    name:
+      - dolphin
+      - firefox
+      - konsole
+      - lynx
+      - cool-retro-term
+    state: present
+    when: ansible_distribution == 'Arch'

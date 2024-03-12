@@ -1,0 +1,11 @@
+---
+- name: Install X11 and deps Arch
+  community.general.pacman:
+    name:
+      - xorg-server
+      - xorg-apps
+      - xorg-xinit
+      - xorg-twm
+      - xorg-xclock
+      - xterm
+    state: present

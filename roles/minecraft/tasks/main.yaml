@@ -1,0 +1,11 @@
+- name: Install Minecraft
+  apt:
+    name: minecraft-launcher
+    state: present
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+- name: Install Minecraft
+  pacman:
+    name: minecraft-launcher
+    state: present
+  when: ansible_distribution == 'Arch'

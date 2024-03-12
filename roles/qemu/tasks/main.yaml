@@ -1,0 +1,11 @@
+---
+- name: Install Prometheus N.E, nfs-common & qemu agent
+  ansible.builtin.apt:
+    name: qemu-guest-agent
+    update_cache: yes
+    state: present
+- name: start guest qemu-guest-agent
+  service:
+    name: qemu-guest-agent
+    state: started
+    enabled: yes

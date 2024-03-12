@@ -1,0 +1,6 @@
+---
+- name: install public keys
+  ansible.posix.authorized_key:
+    user: hansible
+    state: present
+    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub'"

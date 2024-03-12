@@ -1,0 +1,18 @@
+- name: Set Root Password
+  become: yes
+  user:
+    name: root
+    password: "{{ new_root_password | password_hash('sha512') }}"
+
+- name: Configure Sudo Defaults
+  become: yes
+  lineinfile:
+    path: /etc/sudoers
+    insertafter: '^#?[[:space:]]*Defaults[[:space:]]+'
+    line: 'Defaults{{ " " if not (item[0] | regex_match("^$")) else "" }}rootpw'
+  loop: "{{ lookup('file', '/etc/sudoers').splitlines() }}"
+  when: "'Defaults rootpw' not in item"
+
+- name: Debug Information
+  debug:
+    msg: "Root password set and sudo defaults configured."

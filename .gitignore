@@ -1,0 +1,4 @@
+/group_vars
+inventory.ini
+.vault-pass
+ansible.cfg

@@ -1,0 +1,26 @@
+---
+- name: create new volume
+  community.docker.docker_volume:
+    name: portainer-data
+
+- name: deploy portainer
+  community.docker.docker_container:
+    name: portainer
+    image: "docker.io/portainer/portainer-ce"
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    restart_policy: unless-stopped
+
+- name: Deploy Portainer Agent
+  community.docker.docker_container:
+    name: portainer_agent
+    image: portainer/agent
+    ports:
+      - "9001:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volimes:/var/lib/docker/volumes
+    restart_policy: always

@@ -1,0 +1,8 @@
+---
+- name: install NAS and USB utils
+  apt:
+    name:
+      - nfs-common 
+      - usbutils
+      - cifs-utils
+    state: present

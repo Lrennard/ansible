@@ -1,0 +1,12 @@
+---
+- name: Install Plasma and SDDM
+  community.general.pacman:
+    name:
+      - plasma
+      - sddm
+    state: present
+  
+- name: Enable and Start SDDM
+  ansible.builtin.service:
+    name: sddm
+    enabled: yes

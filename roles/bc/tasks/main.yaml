@@ -1,0 +1,6 @@
+---
+- name: Install BC
+  ansible.builtin.apt:
+    name:
+      - bc 
+    state: preset

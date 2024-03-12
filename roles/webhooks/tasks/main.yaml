@@ -1,0 +1,11 @@
+---
+- name: send discord message
+  uri:
+    url: "{{ discord_url }}"
+    method: post
+    body_format: json
+    body: '{"content": "Updates "}'
+    headers:
+      Content-Type: application/json
+    status_code: 204
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian' 
