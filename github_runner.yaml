@@ -1,0 +1,22 @@
+---
+- name: Install and Configure GitHub Actions Runner
+  hosts: actions_runner
+  become: true
+  pre_tasks:
+    - name: Update package cache and upgrade packages (Ubuntu/Debian)
+      apt:
+        update_cache: yes
+        upgrade: yes
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+  roles:
+    - servers
+    - qemu
+    - monitoring
+    - docker
+    - github_runner
+  vars_files:
+    - "group_vars/all/vars.yaml"
+  post_tasks:
+    - name: Reboot Targeted Host
+      reboot:
+        timeout: 3600

@@ -1,0 +1,22 @@
+---
+- name: Create directory for runner
+  file:
+    path: /opt/github-runner
+    state: directory
+
+- name: Download and extract GitHub Actions Runner
+  get_url:
+    url: "https://github.com/actions/runner/releases/download/latest/actions-runner-linux-x64-2.278.0.tar.gz"
+    dest: /opt/github-runner/actions-runner-linux-x64-2.278.0.tar.gz
+
+- name: Extract the runner
+  ansible.builtin.unarchive:
+    src: /opt/github-runner/actions-runner-linux-x64-2.278.0.tar.gz
+    dest: /opt/github-runner
+    remote_src: yes
+
+- name: Configure GitHub Actions Runner
+  command: |
+    ./config.sh --url {{ github_runner_repo_url }} --token {{ github_runner_token }} --name {{ github_runner_name }}
+  args:
+    chdir: /opt/github-runner

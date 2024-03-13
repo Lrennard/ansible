@@ -1,0 +1,5 @@
+---
+- name: restart github-runner
+  service:
+    name: github-runner
+    state: restarted
