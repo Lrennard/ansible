@@ -1,0 +1,28 @@
+---
+- name: (Optional) Pull and Run CAdvisor Container
+  community.docker.docker_image:
+    name: google/cadvisor
+    tag: "{{ cadvisor_version }}"
+    source: pull
+  when: cadvisor_version is defined
+
+- name: (Optional) Run CAdvisor Container
+  community.docker.docker_container:
+    name: cadvisor
+    image: google/cadvisor:{{ cadvisor_version }}
+    state: started
+    restart_policy: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:ro"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker/:/var/lib/docker:ro"
+      - "{{ cadvisor_config_dest }}:/etc/systemd/system/cadvisor.service:ro"
+  when: cadvisor_version is defined
+
+- name: Template CAdvisor Config File
+  ansible.builtin.template:
+    src: "{{ cadvisor_config_src }}"
+    dest: "{{ cadvisor_config_dest }}"

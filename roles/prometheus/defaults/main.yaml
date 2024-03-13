@@ -1,0 +1,4 @@
+---
+prometheus_version: "2.30.0"
+prometheus_config_src: prometheus.yml.j2
+prometheus_config_dest: "/etc/prometheus/prometheus.yml"

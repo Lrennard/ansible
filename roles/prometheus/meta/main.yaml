@@ -1,0 +1,4 @@
+---
+dependencies:
+  - name: Copy Prometheus Config File
+    src: prometheus.yml.j2
