@@ -1,22 +1,6 @@
 ---
-- name: Pull Node Exporter Docker Image
-  community.docker.docker_image:
-    name: quay.io/prometheus/node-exporter
-    tag: "{{ node_exporter_version }}"
-    source: pull
-
-- name: Run Node Exporter Container
-  community.docker.docker_container:
-    name: node_exporter
-    image: quay.io/prometheus/node-exporter:{{ node_exporter_version }}
-    state: started
-    restart_policy: always
-    network_mode: host
-    volumes:
-      - "/:/hostfs:ro"
-      - "{{ node_exporter_config_dest }}:/etc/systemd/system/node_exporter.service:ro"
-
-- name: Template Node Exporter Config File
-  ansible.builtin.template:
-    src: "{{ node_exporter_config_src }}"
-    dest: "{{ node_exporter_config_dest }}"
+- name: Copy Node Exporter Service File
+  ansible.builtin.copy:
+    src: node_exporter/node_exporter.service
+    dest: "/path/on/host/systemd/node_exporter.service"
+    mode: "0644"

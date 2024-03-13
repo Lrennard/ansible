@@ -1,0 +1,11 @@
+[Unit]
+Description=CAdvisor
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/docker run --volume=/:/rootfs:ro --volume=/var/run:/var/run:ro --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true --name=cadvisor google/cadvisor:{{ cadvisor_version }}
+Restart=always
+
+[Install]
+WantedBy=default.target

@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - name: Copy Node Exporter Config File
-    src: node_exporter.service.j2
+  - name: Copy Node Exporter Service File
+    src: node_exporter/node_exporter.service.j2

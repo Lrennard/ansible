@@ -1,4 +1,4 @@
 ---
 cadvisor_version: "v0.41.0"
-cadvisor_config_src: cadvisor.service.j2
+cadvisor_config_src: cadvisor/cadvisor.service.j2
 cadvisor_config_dest: "/etc/systemd/system/cadvisor.service"

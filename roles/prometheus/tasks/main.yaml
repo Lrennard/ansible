@@ -1,22 +1,25 @@
 ---
-- name: Pull Prometheus Docker Image
-  community.docker.docker_image:
-    name: prom/prometheus
-    tag: "{{ prometheus_version }}"
-    source: pull
+- name: Copy Prometheus Config File
+  ansible.builtin.copy:
+    src: prometheus/prometheus.yml.j2
+    dest: "/path/on/host/prometheus/prometheus.yml"
+    mode: "0644"
 
-- name: Run Prometheus Container
-  community.docker.docker_container:
-    name: prometheus
-    image: prom/prometheus:{{ prometheus_version }}
-    state: started
-    restart_policy: always
-    ports:
-      - "9090:9090"
-    volumes:
-      - "{{ prometheus_config_dest }}:/etc/prometheus/prometheus.yml:ro"
+- name: Copy Node Exporter Service File
+  ansible.builtin.copy:
+    src: systemd/node_exporter.service
+    dest: "/path/on/host/systemd/node_exporter.service"
+    mode: "0644"
 
-- name: Template Prometheus Config File
-  ansible.builtin.template:
-    src: prometheus.yml.j2
-    dest: "{{ prometheus_config_dest }}"
+- name: Copy CAdvisor Service File
+  ansible.builtin.copy:
+    src: systemd/cadvisor.service
+    dest: "/path/on/host/systemd/cadvisor.service"
+    mode: "0644"
+
+- name: Deploy Docker Stack
+  community.general.docker_compose:
+    project_src: "{{ playbook_dir }}/roles/docker_stack"
+    project_name: my_docker_stack
+    definition: docker-compose.yml
+    state: present

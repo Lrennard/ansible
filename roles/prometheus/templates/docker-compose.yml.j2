@@ -1,0 +1,37 @@
+version: '3'
+
+networks:
+  monitoring:
+    driver: bridge
+
+services:
+  prometheus:
+    image: prom/prometheus:{{ prometheus_version }}
+    ports:
+      - "9090:9090"
+    volumes:
+      - /path/on/host/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - monitoring
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:{{ node_exporter_version }}
+    network_mode: host
+    volumes:
+      - /:/hostfs:ro
+      - /path/on/host/systemd/node_exporter.service:/etc/systemd/system/node_exporter.service:ro
+    networks:
+      - monitoring
+
+  cadvisor:
+    image: google/cadvisor:{{ cadvisor_version }}
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /path/on/host/systemd/cadvisor.service:/etc/systemd/system/cadvisor.service:ro
+    networks:
+      - monitoring
