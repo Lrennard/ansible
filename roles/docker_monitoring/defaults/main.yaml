@@ -1,0 +1,4 @@
+---
+prometheus_data_dir: "/data/prometheus"
+node_exporter_version: "1.5.0"
+cadvisor_version: "v0.47.0"

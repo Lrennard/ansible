@@ -1,0 +1,5 @@
+---
+- name: Restart Prometheus
+  docker_compose:
+    project_src: "{{ prometheus_data_dir }}"
+    restarted: yes
