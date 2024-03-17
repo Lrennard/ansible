@@ -1,6 +1,14 @@
 ---
-- name: Copy CAdvisor Service File
-  ansible.builtin.copy:
-    src: systemd/cadvisor.service
-    dest: "/path/on/host/systemd/cadvisor.service"
-    mode: "0644"
+- name: Template CAdvisor systemd unit file
+  template:
+    src: cadvisor.service.j2
+    dest: "{{ cadvisor_config_dest }}"  # Assuming default location
+    owner: root
+    group: root
+  vars:
+    # Add variables needed for the unit file configuration (e.g., user)
+
+- name: Reload systemd after configuration changes (optional)
+  systemd:
+    name: daemon-reload
+    state: reload

@@ -2,6 +2,8 @@
 - name: Install and Configure GitHub Actions Runner
   hosts: actions_runner
   become: true
+  vars_files:
+    - "group_vars/all/vars.yaml"
   pre_tasks:
     - name: Update package cache and upgrade packages (Ubuntu/Debian)
       apt:
@@ -14,8 +16,6 @@
     - monitoring
     - docker
     - github_runner
-  vars_files:
-    - "group_vars/all/vars.yaml"
   post_tasks:
     - name: Reboot Targeted Host
       reboot:

@@ -1,4 +1,2 @@
 ---
 node_exporter_version: "1.2.2"
-node_exporter_config_src: node_exporter/node_exporter.service.j2
-node_exporter_config_dest: "/etc/systemd/system/node_exporter.service"

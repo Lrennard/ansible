@@ -1,6 +1,14 @@
 ---
-- name: Copy Node Exporter Service File
-  ansible.builtin.copy:
-    src: node_exporter/node_exporter.service
-    dest: "/path/on/host/systemd/node_exporter.service"
-    mode: "0644"
+- name: Template Node Exporter systemd unit file
+  template:
+    src: node_exporter.service.j2
+    dest: "{{ node_exporter_config_dest }}"  # Assuming default location
+    owner: root
+    group: root
+  vars:
+    # Add variables needed for the unit file configuration (e.g., user)
+
+- name: Reload systemd after configuration changes (optional)
+  systemd:
+    name: daemon-reload
+    state: reload

@@ -3,20 +3,22 @@
   file:
     path: /opt/github-runner
     state: directory
+    mode: 0755  # Add this line to set the correct permissions
 
-- name: Download and extract GitHub Actions Runner
+- name: Download GitHub Actions Runner
   get_url:
-    url: "https://github.com/actions/runner/releases/download/latest/actions-runner-linux-x64-2.278.0.tar.gz"
-    dest: /opt/github-runner/actions-runner-linux-x64-2.278.0.tar.gz
+    url: "https://github.com/actions/runner/releases/download/v2.314.1/actions-runner-linux-x64-2.314.1.tar.gz"
+    dest: /opt/github-runner/actions-runner-linux-x64-2.314.1.tar.gz
 
 - name: Extract the runner
   ansible.builtin.unarchive:
-    src: /opt/github-runner/actions-runner-linux-x64-2.278.0.tar.gz
-    dest: /opt/github-runner
+    src: /opt/github-runner/actions-runner-linux-x64-2.314.1.tar.gz
+    dest: "{{ ansible_env.HOME }}/github-runner"
     remote_src: yes
 
 - name: Configure GitHub Actions Runner
+  become: false
   command: |
     ./config.sh --url {{ github_runner_repo_url }} --token {{ github_runner_token }} --name {{ github_runner_name }}
   args:
-    chdir: /opt/github-runner
+    chdir: "{{ ansible_env.HOME }}/github-runner"

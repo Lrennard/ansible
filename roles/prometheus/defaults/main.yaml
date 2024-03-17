@@ -1,4 +1,5 @@
 ---
 prometheus_version: "2.30.0"
-prometheus_config_src: prometheus.yml.j2
-prometheus_config_dest: "/etc/prometheus/prometheus.yml"
+docker_compose_project_name: "monitoring"  # Optional, define project name
+monitoring_network_name: "monitoring"  # Optional, define network name
+# Define other variables as needed (e.g., network name)

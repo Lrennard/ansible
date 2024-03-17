@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  monitoring:
+  {{ monitoring_network_name }}:
     driver: bridge
 
 services:
@@ -12,7 +12,7 @@ services:
     volumes:
       - /path/on/host/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     networks:
-      - monitoring
+      - {{ monitoring_network_name }}
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:{{ node_exporter_version }}
@@ -21,7 +21,7 @@ services:
       - /:/hostfs:ro
       - /path/on/host/systemd/node_exporter.service:/etc/systemd/system/node_exporter.service:ro
     networks:
-      - monitoring
+      - {{ monitoring_network_name }}
 
   cadvisor:
     image: google/cadvisor:{{ cadvisor_version }}
@@ -34,4 +34,4 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /path/on/host/systemd/cadvisor.service:/etc/systemd/system/cadvisor.service:ro
     networks:
-      - monitoring
+      - {{ monitoring_network_name }}

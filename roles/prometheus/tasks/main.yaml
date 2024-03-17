@@ -1,25 +1,15 @@
 ---
-- name: Copy Prometheus Config File
-  ansible.builtin.copy:
-    src: prometheus/prometheus.yml.j2
-    dest: "/path/on/host/prometheus/prometheus.yml"
-    mode: "0644"
+- name: Template Prometheus configuration file
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ prometheus_config_dest }}"
+    owner: prometheus
+    group: prometheus
+  vars:
+    # Add variables needed for the Prometheus configuration
 
-- name: Copy Node Exporter Service File
-  ansible.builtin.copy:
-    src: systemd/node_exporter.service
-    dest: "/path/on/host/systemd/node_exporter.service"
-    mode: "0644"
-
-- name: Copy CAdvisor Service File
-  ansible.builtin.copy:
-    src: systemd/cadvisor.service
-    dest: "/path/on/host/systemd/cadvisor.service"
-    mode: "0644"
-
-- name: Deploy Docker Stack
+- name: Deploy Docker Compose stack for monitoring
   community.general.docker_compose:
-    project_src: "{{ playbook_dir }}/roles/docker_stack"
-    project_name: my_docker_stack
-    definition: docker-compose.yml
+    project_name: "{{ docker_compose_project_name }}"  # Define project name (optional)
+    definition: docker-compose.yml.j2
     state: present
