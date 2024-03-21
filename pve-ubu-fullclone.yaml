@@ -1,0 +1,24 @@
+- hosts: teller
+  name: Clone UbuTemp
+  tasks:
+  - name: Clone VM602
+    community.general.proxmox_kvm:
+      api_user: root@pam
+      api_password: "{{ ssh_pass }}"
+      api_host: "{{ api_host }}
+      clone: jammy-server-cloud
+      vmid: 602
+      newid: 136
+      name: playbook-tester
+      node: teller
+      storage: local-lvm
+      format: qcow2
+      timeout: 500
+  - name: start clone
+    community.general.proxmox_kvm:
+      api_user: root@pam
+      api_password: "{{ ssh_pass }}"
+      api_host: "{{ api_host }}
+      name: playbook-tester
+      node: teller
+      state: started

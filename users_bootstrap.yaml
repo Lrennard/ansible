@@ -1,0 +1,35 @@
+---
+- name: Bootstrap users and Configure Priveleges
+  hosts: "*"
+  become: yes
+  vars_prompt:
+    - name: "new_root_password"
+      prompt: "Enter the new root password"
+      private: yes
+  pre_tasks:
+    - name: Install Updates
+      apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Create Ansible User
+      user:
+        name: "{{ ssh_user }}"
+        groups: sudo
+
+    - name: add ssh keys for User
+      authorized_key:
+        user: "{{ ssh_user }}"
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    - name: add sudoers file for Ansible User
+      copy:
+        src: "{{ sudeors_file }}"
+        dest: /etc/sudoers.d/"{{ ssh_user }}"
+        owner: root
+        group: root
+        mode: 0440
+
+  roles:
+    - su_defaults
