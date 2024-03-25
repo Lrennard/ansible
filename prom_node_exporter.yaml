@@ -3,6 +3,4 @@
   hosts: docker_hosts
   become: yes
   roles:
-    - prometheus
-    - node_exporter
-    - cadvisor
+    - docker_monitoring
