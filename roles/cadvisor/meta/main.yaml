@@ -1,5 +1,0 @@
----
-dependencies:
-  - name: Copy CAdvisor Service File
-    src: cadvisor/cadvisor.service.j2
-
