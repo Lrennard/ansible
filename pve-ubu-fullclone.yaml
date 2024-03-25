@@ -1,24 +1,102 @@
 - hosts: teller
   name: Clone UbuTemp
   tasks:
-  - name: Clone VM602
-    community.general.proxmox_kvm:
-      api_user: root@pam
-      api_password: "{{ ssh_pass }}"
-      api_host: "{{ api_host }}
-      clone: jammy-server-cloud
-      vmid: 602
-      newid: 136
-      name: playbook-tester
-      node: teller
-      storage: local-lvm
-      format: qcow2
-      timeout: 500
-  - name: start clone
-    community.general.proxmox_kvm:
-      api_user: root@pam
-      api_password: "{{ ssh_pass }}"
-      api_host: "{{ api_host }}
-      name: playbook-tester
-      node: teller
-      state: started
+- hosts: teller
+  name: Clone UbuTemp
+  vars:
+    api_host: "{{ host }}"
+    vlan: "23"
+  vars_prompt:
+    - name: "vmid"
+      prompt: "Enter the New VID (Virtual Machine ID):"
+      private: no
+    - name: "vm_name"
+      prompt: "Enter the New VM Name"
+      private: no
+  tasks:
+
+    - name: create new VM from template 602
+      community.general.proxmox_kvm:
+        api_user: root@pam
+        api_password: "{{ ssh_pass }}"
+        api_host: "{{ api_host }}"
+        clone: jammy-server-cloud
+        vmid: 602
+        newid: "{{ vmid }}"
+        name: "{{ vm_name  }}"
+        node: teller
+        storage: local-lvm
+        format: qcow2
+        timeout: 500
+      register: results
+
+    - name: Introduce a Time Delay
+      pause:
+        seconds: 5  # Adjust the delay time as neededgister: results
+
+    - name: Configure Netconf for Kube Node3
+      community.general.proxmox_nic:
+        api_user: root@pam
+        api_password: "{{ ssh_pass }}"
+        api_host: "{{ api_host }}"
+        name: "{{ vm_name }}"
+        interface: net0
+        bridge: vmbr0
+        tag: "{{ vlan }}"
+        firewall: true
+
+    - name:
+      community.general.proxmox_kvm:
+        api_user: root@pam
+        api_password: "{{ ssh_pass }}"
+        api_host: "{{ api_host }}"
+        node: teller
+        name: "{{ vm_name }}"
+        cores: 2
+        memory: 2048
+        ciuser: "{{ ci_user }}"
+        cipassword: "{{ ci_password }}"
+        ipconfig:
+          ipconfig0: 'ip=dhcp'
+        sshkeys: "{{ pubkey }}"
+        update: true
+
+    - name:
+      community.general.proxmox_disk:
+        api_user: root@pam
+        api_password: "{{ ssh_pass }}"
+        api_host: "{{ api_host }}"
+        name: "{{ vm_name }}"
+        disk: scsi0
+        size: 32G
+        state: resized
+
+    - name: start Kube Node3
+      community.general.proxmox_kvm:
+        api_user: root@pam
+        api_password: "{{ ssh_pass }}"
+        api_host: "{{ api_host }}"
+        name: "{{ vm_name }}"
+        node: teller
+        state: started
+
+    - name: Introduce a Time Delay
+      pause:
+        seconds: 30  # Adjust the delay time as needed
+
+    - name: Gather the Status of the VM
+      community.general.proxmox_kvm:
+        api_user: root@pam
+        api_password: "{{ ssh_pass }}"
+        api_host: "{{ api_host }}"
+        name: "{{ vm_name }}"
+        node: teller
+        state: current
+      register: mac
+
+    - name: set mac as variable
+      set_fact:
+        mac: "{{ result.mac.net0 }}"
+
+    - debug:
+        var: mac
